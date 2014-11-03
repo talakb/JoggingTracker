@@ -15,12 +15,6 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 					lng:0
 					};	
 					
-		var map; 
-		var mapOptions = {
-		zoom: 10
-		}
-					
-		map = new google.maps.Map(document.getElementById('map'), mapOptions);
 		$scope.latLng = latLng; 
 		
 		mapLoaderService.geocode(function(latLng){	
