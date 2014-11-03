@@ -17,8 +17,7 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 					
 		$scope.latLng = latLng; 
 		
-		mapLoaderService.geocode(function(latLng){	
-													$scope.latLng = latLng; 
+		mapLoaderService.geocode(function(latLng){	$scope.latLng = latLng; 
 													$scope.$digest();}, 
 													latLng);	
 	}]);
@@ -33,8 +32,6 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 		//instantiate map 
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
 		var myMapLoader = {};
-		
-		
 		 
 
 			//read geocode response as JSON 
@@ -54,10 +51,9 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 
 			//render the map 
 			myMapLoader.render(latLng);						
-			}
-		
-				return latLng;
-			}
+			}		
+				
+		}
 			
 		//render the map 
 		myMapLoader.render = function(latLon){
