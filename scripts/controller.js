@@ -8,7 +8,6 @@ var MyGMapAppControllers = angular.module('MyGMapAppControllers', []);
 //inject $scope and mapLoaderService  
 MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService', 
   function MyGMapController($scope, mapLoaderService){
-<<<<<<< HEAD
 		
 		//latLng obj 
 		var latLng={
@@ -30,21 +29,6 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 													latLng);	
 	}]);
 		
-=======
-		var address = {};		
-		address.city = "Columbus";	
-		address.state = "OH";
-		$scope.address =  address; 
-		
-		var gmapApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" 
-		
-		//load map ('search' button click) 
-		$scope.showMap = function(){
-		mapLoaderService.geocode(function(){}, address, gmapApiUrl);			
-		}
-	 }]);
-	 
->>>>>>> f2546078d036372b92fb6d88e50563973beadf05
 	 //create a service or factory that implements and return mapLoader obj. 
 	 MyGMapAppControllers.service('mapLoaderService', function(){
 		var mapOptions = {
@@ -55,7 +39,6 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 		//instantiate map 
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
 		var myMapLoader = {};
-<<<<<<< HEAD
 		
 		
 		 
@@ -80,15 +63,6 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 			}
 		
 				return latLng;
-=======
-
-		//read geocode response as JSON 
-		myMapLoader.geocode =  function(renderCallback, address, gmapApiUrl){
-			 var url =  gmapApiUrl + address.city + " , " + address.state; 
-			 var mapJsonResp = $.getJSON(url, function(data){
-				myMapLoader.render(getLatLon(data));
-				});
->>>>>>> f2546078d036372b92fb6d88e50563973beadf05
 			}
 			
 		//render the map 
@@ -102,24 +76,15 @@ MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService'
 
 		  
 		// get lat lon from JSON result 
-<<<<<<< HEAD
 		/*function getLatLon(jsonResult){
-=======
-		function getLatLon(jsonResult){
->>>>>>> f2546078d036372b92fb6d88e50563973beadf05
 			var resultObj = JSON.stringify(jsonResult);
 			var JSONobj = JSON.parse(resultObj);
 			latLngRes = JSONobj.results[0].geometry.location;
 			return latLngRes; 
-<<<<<<< HEAD
 		}*/
 		
 		
 				
-=======
-		}
-		
->>>>>>> f2546078d036372b92fb6d88e50563973beadf05
 		return myMapLoader; 
 	 
 	 });
