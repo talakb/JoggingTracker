@@ -2,20 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script	src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+
+
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="lib/bower_components/angularjs/angular.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/controller.js"></script>
+
 <title>GMap Angular</title>
 </head>
 <body>
-	
-	<div ng-app="MyMapApp" id ="mapDiv" ng-controller="MyGMapController"> 
-		<!--button ng-click="showMap()"> Search </button><br-->
-		<p>Lat: {{latLng.lat}} <br> Lon: {{latLng.lng}} </p>
-	</div>
-	<div align="center" id="map" style="width: 100%; height: 600px">
-	</div>
+
+<div ng-app="MyMapApp" ng-controller="MyGMapController"> 
+
+<p>Lat: {{latLng.lat}}<br>
+   Lon: {{latLng.lng}} </p> 
+<button ng-click="saveLocation()"> Save </button>
+<button ng-click="clear()"> Clear localStorage </button>
+<button ng-click="showMyRoute()"> Plot Map </button>
+</div>
+<br>
+<div align="center" id="map" style="width: 100%; height: 600px">
+</div>
 </body>
 </html>
