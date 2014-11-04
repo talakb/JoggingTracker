@@ -5,7 +5,7 @@
 var MyGMapAppControllers = angular.module('MyGMapAppControllers', []);
 
 //create a controller called "MyGMapController" 
-//inject $scope and mapLoaderService  
+//inject $scope, mapLoaderService, mapRouteRender 
 MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService', 'mapRouteRender',
 function MyGMapController($scope, mapLoaderService, mapRouteRender){
 	
@@ -37,8 +37,6 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 		var key = d.toJSON();
 		//store lat lng info on localstorage (time stamp as key and lat lng as value) 	
 		$scope.saveLocation = function(){
-		//latLng.lat = 39.9726029;
-		//latLng.lng = -83.0444366;
 			var value = JSON.stringify(latLng);
 				localStorage.setItem(key, value); 
 		   }
@@ -74,7 +72,7 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 				navigator.geolocation.getCurrentPosition(setPosition);
 				}
 			else{
-				alert("Error.");
+				alert("Geolocation error.");
 				}
 		}
 	
@@ -154,7 +152,7 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 		  directionsDisplay.setMap(map);      
 		}
 		else{
-		alert("Error");
+		alert("DirectionsStatus error");
 		}
 	  });
 	   
