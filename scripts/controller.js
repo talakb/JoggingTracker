@@ -26,11 +26,11 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 
 	
 	
-	mapLoaderService.geocode(function(latLng){	
-												$scope.latLng = latLng; 
-												$scope.$digest();
-											 }, 
-												latLng, map);
+	mapLoaderService.geocode(
+				function(latLng){	
+								$scope.latLng = latLng; 
+								$scope.$digest();
+								}, latLng, map);
 	
 		//get timestamp 
 		var d = new Date();
@@ -61,7 +61,6 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 		//mapLoader Obj. 
 		var myMapLoader = {};
 		 
-
 		//read geocode response as JSON 
 		myMapLoader.geocode =  function(latLngCallBack, latLng, map){
 		//get current location of the user 
