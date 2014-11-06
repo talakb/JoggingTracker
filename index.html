@@ -3,24 +3,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="lib/bower_components/angularjs/angular.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/controller.js"></script>
+<script src="sample.json"></script>
 
-<title>GMap Angular</title>
+<title>MyMap App</title>
 </head>
 <body>
 
-<div ng-app="MyMapApp" ng-controller="MyGMapController"> 
-
-<p>Lat: {{latLng.lat}}<br>
-   Lon: {{latLng.lng}} </p> 
-<button ng-click="saveLocation()"> Save </button>
-<button ng-click="clear()"> Clear localStorage </button>
-<button ng-click="showMyRoute()"> Plot Map </button>
+<div ng-app="MyMapApp" ng-controller="MyGMapController" id="btnsDiv"> 
+	<button ng-click="startLocationTracking()"> Start </button>
+	<button ng-click="endLocationTracking()"> End </button>
+	<button ng-click="clear()"> Clear localStorage </button>
+	<button ng-click="myListOfPath()"> Route History </button>
+	<li ng-repeat="path in myPathHistory">
+	  <p><a ng-href="#" data-ng-attr-id={{path}} ng-click="showMyRoute($event)"/>{{path}}</p>
+	</li>
 </div>
+
 <br>
 <div align="center" id="map" style="width: 100%; height: 600px">
 </div>

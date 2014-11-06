@@ -5,135 +5,172 @@
 var MyGMapAppControllers = angular.module('MyGMapAppControllers', []);
 
 //create a controller called "MyGMapController" 
-//inject $scope, mapLoaderService, mapRouteRender 
-MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapLoaderService', 'mapRouteRender',
-function MyGMapController($scope, mapLoaderService, mapRouteRender){
+//inject $scope and mapLoaderService  
+MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapRouteRender',
+function MyGMapController($scope, mapRouteRender){
 	
-	//latLng obj 	
-	var latLng ={
-				lat:0,
-				lng:0
-				};	
-				
-	$scope.latLng = latLng; 
-	
-	var mapOptions = {
-	zoom: 10
-	}
+		//latLng obj 	
+		var latLng ={
+					lat:0,
+					lng:0
+					};
+					
+		//update latLng based on user's current location 
+		getUserLocation(function(latLng)
+			 {	
+				$scope.latLng = latLng; 
+				$scope.$digest();
+			 });
 
-	//instantiate map 
-	var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-	
-	
-	mapLoaderService.geocode(
-				function(latLng){	
-								$scope.latLng = latLng; 
-								$scope.$digest();
-								}, latLng, map);
-	
-		//get timestamp 
-		var d = new Date();
-		var key = d.toJSON();
-		//store lat lng info on localstorage (time stamp as key and lat lng as value) 	
-		$scope.saveLocation = function(){
-			var value = JSON.stringify(latLng);
-				localStorage.setItem(key, value); 
-		   }
-		   
-		   //clear local storage 
-		   $scope.clear = function(){
-			localStorage.clear();
-		   }
-		   
-		      //clear local storage 
-		   $scope.showMyRoute = function(){
-			  mapRouteRender.renderRoute(localStorage, map); 
-		   }
-
-												
-}]);
-	
- //create a service or factory that implements and return mapLoader obj. 
- MyGMapAppControllers.service('mapLoaderService', function(){
-	
-
-		//mapLoader Obj. 
-		var myMapLoader = {};
-		 
-		//read geocode response as JSON 
-		myMapLoader.geocode =  function(latLngCallBack, latLng, map){
-		//get current location of the user 
-		getCurrentLocation();
 		
-		function getCurrentLocation() {
+		var myPathHistory = [];
+		$scope.myPathHistory = myPathHistory; 								
+		
+		var locTimerService;
+		//get location with time interval of 5 seconds 		
+		$scope.startLocationTracking = function(){
+			locTimerService = setInterval(function(){
+								//store <timestamp, latLng> on localStorage 
+								var d = new Date();
+								var key = d.toJSON();	
+								var value = JSON.stringify(latLng);
+								//store lat lng info on localstorage (time stamp as key and lat lng as value) 
+								localStorage.setItem(key, value); 
+				}, 5000);				
+		}
+		   
+	   //stop location tracking and save the lists of lat lng as new path  
+	   $scope.endLocationTracking = function(){		   
+		   //stop timer 
+			clearTimeout(locTimerService);		
+			//save route to localStorage  
+			mapRouteRender.saveRoute();			
+	   }
+		   
+	   //clear localStorage 
+	   $scope.clear = function(){
+			localStorage.clear();
+	   }
+		   
+		//add new div element to display all the maps of currently logged in user    
+		$scope.myListOfPath = function(){	  
+			for (var i = 0; i < localStorage.length; i++) {
+				myPathHistory.push(localStorage.key(i));
+			}	
+					
+		}
+		
+		   
+	   //display lists of route from localStorage 	   
+	   $scope.showMyRoute = function(event){
+	   
+	        var pathId;
+			pathId = event.target.id;
+			
+			var listLatLng;
+			listLatLng = localStorage.getItem(pathId);
+			var mapOptions = {
+			zoom: 10
+			}
+	
+		  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+		  mapRouteRender.renderRoute(listLatLng, map); 			
+	   }
+	   
+	   
+	   	//get the current location of the user  
+		function getUserLocation() {
 			if(navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(setPosition);
 				}
 			else{
-				alert("Geolocation error.");
+				alert("navigator.geolocation error.");
 				}
 		}
-	
-		function setPosition(position) {
 		
-		latLng.lat = position.coords.latitude; 
-		latLng.lng = position.coords.longitude;
-		latLngCallBack(latLng);
-
-		//render the map 
-		myMapLoader.render(latLng, map);						
-		}		
-			
-	}
-		
-	//render the map 
-	myMapLoader.render = function(latLon, map){
-		   map.setCenter(latLon);
-		   var marker = new google.maps.Marker({
-			  map: map,
-			  position: latLon
-		  }); 
-		} 
-
-	  
+		function setPosition(position) {		
+			latLng.lat = position.coords.latitude; 
+			latLng.lng = position.coords.longitude;				
+		}
+		   
+	   
+		   											
+}]);
 	
-	return myMapLoader; 
- 
- });
- 
- 
  //create a service or factory that implements and return mapRouteRender obj. 
  MyGMapAppControllers.service('mapRouteRender', function(){
+		//mapLoader Obj. 
+		var mapRouteRender = {};
+	 //   var currentLatLng;
+		
+
 	
-	
-	//mapLoader Obj. 
-	var mapRouteRender = {};
-	 				
-	//render the map route  
-	mapRouteRender.renderRoute = function(localStorageArr, map){
+			
+			
+		//save lat lng stored on localStorage as <Path<timestamp>, listOfPath>
+		mapRouteRender.saveRoute = function(){
+			var route = ''; 
+			var timeStamp = []; 
+			
+			var d = new Date();
+			var key = d.toJSON();
+			
+			// push timestamp to the array 			
+			for (var i = 0; i < localStorage.length; i++) {
+				if(localStorage.key(i).indexOf('Path') == -1){
+					timeStamp.push(localStorage.key(i)); 
+				}				
+			}
+			
+			if(timeStamp.length == 0)
+			{
+				alert('no route log added yet');
+				return; 
+			}
+				
+			//sort (N.B: localStorage stores <key,value> randomly, but we need to access the locations based on timestamp)
+			timeStamp.sort();
+			
+			//create new path			
+			for(var j=0; j<timeStamp.length; j++){
+			 var locJsonStr = JSON.parse(localStorage.getItem(timeStamp[j]));						
+			 route += '{' + '\"lat":' + locJsonStr.lat + ',\"lng":' + locJsonStr.lng + '},'; 			
+			}
+			
+			route = '{\"path":[' + route.substring(0, route.length - 1) + ']}';
+				
+			//save to localStorage as <Path_timestamp, lists_of_latlng> 
+			localStorage.setItem('Path_' + key, route);
+
+			//remove individual track history from localStorage 
+			for (var key in timeStamp ) {	
+				if(localStorage.getItem(timeStamp[key]) !== null){
+				localStorage.removeItem(timeStamp[key]);
+				}				
+			}			
+		
+		}
+		//render the map route  
+		mapRouteRender.renderRoute = function(localStorageArr, map){
+		
+		//google maps API services 	
 		var directionsDisplay = new google.maps.DirectionsRenderer();
 		var directionsService = new google.maps.DirectionsService();
-	
-	
+		
 		 //read start and end location 
-		  var startJsonStr = JSON.parse(localStorage.getItem(localStorageArr.key(0)));		 
-	 	  var startLatLng = new google.maps.LatLng(startJsonStr.lat, startJsonStr.lng); 
-
-		  var endJsonStr = JSON.parse(localStorage.getItem(localStorageArr.key(localStorageArr.length - 1)));
-		  var endLatLng = new google.maps.LatLng(endJsonStr.lat, endJsonStr.lng); 		  
+		var pathJson = JSON.parse(localStorageArr);	
+		var listOfLatLng = pathJson.path; 
+	 	var startLatLng = new google.maps.LatLng(listOfLatLng[0].lat, listOfLatLng[0].lng); 
+		var endLatLng = new google.maps.LatLng(listOfLatLng[listOfLatLng.length - 1].lat, listOfLatLng[listOfLatLng.length - 1].lng);
 		  
-		  //an array to store route points 
-		  var waypts = [];
-		  
-		//add locations stored on localStorage
-		for ( var i = 0, len = localStorageArr.length; i < len; ++i ) {
-			var locJsonStr = JSON.parse(localStorage.getItem(localStorageArr.key(i)));
-			var locLatLng = new google.maps.LatLng(locJsonStr.lat, locJsonStr.lng); 			
-			waypts.push({			
+		//an array to store route points 
+		var waypts = [];
+		
+		for (var latLng in listOfLatLng){
+				var locLatLng = new google.maps.LatLng(listOfLatLng[latLng].lat , listOfLatLng[latLng].lng); 
+				waypts.push({			
 				location:locLatLng,
 				stopover:true});
-
 			}
 
 		var request = {
@@ -151,17 +188,11 @@ function MyGMapController($scope, mapLoaderService, mapRouteRender){
 		  directionsDisplay.setMap(map);      
 		}
 		else{
-		alert("DirectionsStatus error");
+			alert(" DirectionsStatus Error");
 		}
-	  });
-	   
-	} 
+	  });	   
+	}		
 
  return mapRouteRender; 
  
  });
- 
-
-
- 
- 
