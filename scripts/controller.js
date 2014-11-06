@@ -94,8 +94,8 @@ function MyGMapController($scope, mapRouteRender){
 		   
 	   
 		   											
-}]);
 	
+}]);
  //create a service or factory that implements and return mapRouteRender obj. 
  MyGMapAppControllers.service('mapRouteRender', function(){
 		//mapLoader Obj. 
@@ -103,7 +103,7 @@ function MyGMapController($scope, mapRouteRender){
 		
 		//save lat lng stored on localStorage as <Path<timestamp>, listOfPath>
 		mapRouteRender.saveRoute = function(){
-			var route = ''; 
+			var route = ''; //store list of GPS coordinates as JSON object  
 			var timeStamp = []; 
 			
 			var d = new Date();
@@ -146,8 +146,7 @@ function MyGMapController($scope, mapRouteRender){
 		}
 		
 		//render the map   
-		mapRouteRender.renderRoute = function(localStorageArr, map){
-		
+		mapRouteRender.renderRoute = function(localStorageArr, map){		
 		//google maps API services 	
 		var directionsDisplay = new google.maps.DirectionsRenderer();
 		var directionsService = new google.maps.DirectionsService();
