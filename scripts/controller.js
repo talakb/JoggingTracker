@@ -60,7 +60,7 @@ function MyGMapController($scope, mapRouteRender){
 		}
 		
 		   
-	   //display lists of route from localStorage 	   
+	   //load map based on the path selected  	   
 	   $scope.showMyRoute = function(event){
 	   
 	        var pathId;
@@ -100,12 +100,7 @@ function MyGMapController($scope, mapRouteRender){
  MyGMapAppControllers.service('mapRouteRender', function(){
 		//mapLoader Obj. 
 		var mapRouteRender = {};
-	 //   var currentLatLng;
 		
-
-	
-			
-			
 		//save lat lng stored on localStorage as <Path<timestamp>, listOfPath>
 		mapRouteRender.saveRoute = function(){
 			var route = ''; 
@@ -127,7 +122,7 @@ function MyGMapController($scope, mapRouteRender){
 				return; 
 			}
 				
-			//sort (N.B: localStorage stores <key,value> randomly, but we need to access the locations based on timestamp)
+			//sort (localStorage stores <key,value> randomly, but we need to access the locations based on timestamp)
 			timeStamp.sort();
 			
 			//create new path			
@@ -149,14 +144,15 @@ function MyGMapController($scope, mapRouteRender){
 			}			
 		
 		}
-		//render the map route  
+		
+		//render the map   
 		mapRouteRender.renderRoute = function(localStorageArr, map){
 		
 		//google maps API services 	
 		var directionsDisplay = new google.maps.DirectionsRenderer();
 		var directionsService = new google.maps.DirectionsService();
 		
-		 //read start and end location 
+		//read start and end location 
 		var pathJson = JSON.parse(localStorageArr);	
 		var listOfLatLng = pathJson.path; 
 	 	var startLatLng = new google.maps.LatLng(listOfLatLng[0].lat, listOfLatLng[0].lng); 
