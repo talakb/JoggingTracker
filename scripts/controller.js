@@ -1,11 +1,10 @@
 'use strict'
 
 /*My GMap Controllers */
-
 var MyGMapAppControllers = angular.module('MyGMapAppControllers', []);
 
 //create a controller called "MyGMapController" 
-//inject $scope and mapLoaderService  
+//inject $scope and mapRouteRender  
 MyGMapAppControllers.controller("MyGMapController",['$scope', 'mapRouteRender',
 function MyGMapController($scope, mapRouteRender){
 	
