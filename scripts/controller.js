@@ -51,7 +51,7 @@ function MyGMapController($scope, mapRouteRender){
 			localStorage.clear();
 	   }
 		   
-		//add new div element to display all the maps of currently logged in user    
+		//display lists of path
 		$scope.myListOfPath = function(){	  
 			for (var i = 0; i < localStorage.length; i++) {
 				myPathHistory.push(localStorage.key(i));
